@@ -1,0 +1,60 @@
+Persistent Volume and Persistent Volume Claim
+=============================================
+Persistent Volume (PV) - It�s a piece of network storage that has been provisioned by the administrator. It�s a resource in the cluster which is independent of any individual pod that uses the PV.
+
+Persistent Volume Claim (PVC) - The storage requested by Kubernetes for its pods is known as PVC. The user does not need to know the underlying provisioning. The claims must be created in the same namespace where the pod is created.
+
+
+1. Creating Persistent Volume
+	Use the below yml file to create PVolume
+kind: PersistentVolume ---------> 1
+apiVersion: v1
+metadata:
+   name: pv0001 
+   labels:
+      type: local
+spec:
+   capacity: 
+      storage: 10Gi 
+   accessModes:
+      - ReadWriteOnce 
+      hostPath:
+         path: "/home/ec2-user/efs" 
+
+
+You can verify above one by , "kubectl get pv"
+
+2. Creating Persistent Volume Claim
+	Now you can claim above created volume "pv0001" with below yml 
+
+kind: PersistentVolumeClaim 
+apiVersion: v1
+metadata:
+   name: myclaim-1 
+spec:
+   accessModes:
+      - ReadWriteOnce 
+   resources:
+      requests:
+         storage: 8Gi   
+
+
+3. Using PV and PVC with POD
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+spec:
+  containers:
+  - name: redis
+    image: redis
+    volumeMounts:
+    - name: redis-storage
+      mountPath: /data/redis
+  volumes:
+  - name: redis-storage
+    persistentVolumeClaim:
+    claimName: myclaim-1
+

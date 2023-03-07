@@ -1,0 +1,20 @@
+---
+- name: CIS_RESTAPI's
+  hosts: servers
+
+  tasks:
+    -   name : User Registration
+        shell : /opt/SIU_Ansible/bin/cistools usermanage -opt REGISTER -host http://15.213.55.158:8081 -inpath /tmp/user.json
+        register: reg
+    -   debug: msg={{reg.stdout}}
+    - pause: 
+         seconds: 30
+    -   name : User Login....
+        shell : /opt/SIU_Ansible/bin/cistools auth -opt LOGIN -host http://15.213.55.158:8081 -username vishnu -password password
+        register: login
+    -   debug: msg={{login.stdout}}
+    - pause: 
+         seconds: 30
+
+
+...

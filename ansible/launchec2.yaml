@@ -1,0 +1,16 @@
+- name: a play that runs entirely on the ansible host
+  hosts: localhost
+  connection: local
+
+  tasks:
+   - name: Launch Instance
+     ec2:
+
+           instance_type=t2.micro
+           image=ami-c58c1dd3
+           region=us-east-1
+           keypair=newkey
+           count=1
+           group=ApacheSG_Linux
+           instance_tags="Name=Ansible-Test-ssh"
+
